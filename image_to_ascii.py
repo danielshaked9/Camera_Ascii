@@ -10,13 +10,16 @@ from PIL import Image
 # http://paulbourke.net/dataformats/asciiart/
 
 # 70 levels of gray
+
 gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
 
 # 10 levels of gray
-gscale2 = '@%#*+=-:. '
+
+#gscale2 = '@%#*+=-:. '
+gscale2 = '@$&#!:;|. '
 #gscale2 = 'אבגדהוזחטיכלמנסעפצקרשת '
 #2 levels of gray
-gscale3 = '0 1'
+#gscale3 = '@!#$%^&*(H'
 
 def getAverageL(image):
 
@@ -32,7 +35,7 @@ def getAverageL(image):
 	# get average
 	return np.average(im.reshape(w*h))
 
-def covertImageToAscii(cvimg, cols, scale, moreLevels):
+def ConvertImageToAscii(cvimg, cols, scale, moreLevels):
 	"""
 	Given Image and dims (rows, cols) returns an m*n list of Images
 	"""
@@ -40,7 +43,6 @@ def covertImageToAscii(cvimg, cols, scale, moreLevels):
 	global gscale1, gscale2
 
 	# open image and convert to grayscale
-	#image = Image.open(fileName).convert('L')
 	image = Image.fromarray(cvimg).convert('L')
 	# store dimensions
 	W, H = image.size[0], image.size[1]
@@ -88,16 +90,17 @@ def covertImageToAscii(cvimg, cols, scale, moreLevels):
 				x2 = W
 
 			# crop image to extract tile
-			img = image.crop((x1, y1, x2, y2))
+			#img = image.crop((x1, y1, x2, y2))
 
 			# get average luminance
-			avg = int(getAverageL(img))
+			#avg = int(getAverageL(img))
 
 			# look up ascii char
 			if moreLevels:
-				gsval = gscale1[int((avg*69)/255)]
+				gsval = gscale1[int((int(getAverageL(image.crop((x1, y1, x2, y2))))*69)/255)]
 			else: 
-				gsval = gscale2[int((avg*9)/255)]
+				#gsval = gscale2[int((int(getAverageL(image.crop((x1, y1, x2, y2))))*9)/255)]
+				gsval = gscale2[int((int(getAverageL(image.crop((x1, y1, x2, y2))))*9)/255)]
 				
 
 			# append ascii char to string
@@ -105,57 +108,3 @@ def covertImageToAscii(cvimg, cols, scale, moreLevels):
 	
 	# return txt image
 	return aimg
-
-"""# main() function
-def main():
-	# create parser
-	descStr = "This program converts an image into ASCII art."
-	parser = argparse.ArgumentParser(description=descStr)
-	# add expected arguments
-	parser.add_argument('--file', dest='imgFile', required=True)
-	parser.add_argument('--scale', dest='scale', required=False)
-	parser.add_argument('--out', dest='outFile', required=False)
-	parser.add_argument('--cols', dest='cols', required=False)
-	parser.add_argument('--morelevels',dest='moreLevels',action='store_true')
-
-	# parse args
-	args = parser.parse_args()
-
-	imgFile = args.imgFile
-
-	# set output file
-	outFile = 'out.txt'
-	if args.outFile:
-		outFile = args.outFile
-
-	# set scale default as 0.43 which suits
-	# a Courier font
-	scale = 0.43
-	if args.scale:
-		scale = float(args.scale)
-
-	# set cols
-	cols = 80
-	if args.cols:
-		cols = int(args.cols)
-
-	print('generating ASCII art...')
-	# convert image to ascii txt
-	aimg = covertImageToAscii(imgFile, cols, scale, args.moreLevels)
-
-	# open file
-	f = open(outFile, 'w')
-
-	# write to file
-	for row in aimg:
-		f.write(row + '\n')
-
-	# cleanup
-	f.close()
-	print("ASCII art written to %s" % outFile)
-
-# call main
-if __name__ == '__main__':
-	main()"""
- 
- 
