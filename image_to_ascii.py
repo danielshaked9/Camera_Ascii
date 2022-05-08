@@ -15,6 +15,8 @@ gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'
 # 10 levels of gray
 gscale2 = '@%#*+=-:. '
 #gscale2 = 'אבגדהוזחטיכלמנסעפצקרשת '
+#2 levels of gray
+gscale3 = '0 1'
 
 def getAverageL(image):
 
@@ -30,7 +32,7 @@ def getAverageL(image):
 	# get average
 	return np.average(im.reshape(w*h))
 
-def covertImageToAscii(fileName, cols, scale, moreLevels):
+def covertImageToAscii(cvimg, cols, scale, moreLevels):
 	"""
 	Given Image and dims (rows, cols) returns an m*n list of Images
 	"""
@@ -38,11 +40,11 @@ def covertImageToAscii(fileName, cols, scale, moreLevels):
 	global gscale1, gscale2
 
 	# open image and convert to grayscale
-	image = Image.open(fileName).convert('L')
-
+	#image = Image.open(fileName).convert('L')
+	image = Image.fromarray(cvimg).convert('L')
 	# store dimensions
 	W, H = image.size[0], image.size[1]
-	print("input image dims: %d x %d" % (W, H))
+	#print("input image dims: %d x %d" % (W, H))
 
 	# compute width of tile
 	w = W/cols
@@ -53,8 +55,8 @@ def covertImageToAscii(fileName, cols, scale, moreLevels):
 	# compute number of rows
 	rows = int(H/h)
 	
-	print("cols: %d, rows: %d" % (cols, rows))
-	print("tile dims: %d x %d" % (w, h))
+	#print("cols: %d, rows: %d" % (cols, rows))
+	#print("tile dims: %d x %d" % (w, h))
 
 	# check if image size is too small
 	if cols > W or rows > H:
@@ -94,8 +96,9 @@ def covertImageToAscii(fileName, cols, scale, moreLevels):
 			# look up ascii char
 			if moreLevels:
 				gsval = gscale1[int((avg*69)/255)]
-			else:
+			else: 
 				gsval = gscale2[int((avg*9)/255)]
+				
 
 			# append ascii char to string
 			aimg[j] += gsval
